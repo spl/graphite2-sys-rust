@@ -1,0 +1,64 @@
+language: rust
+cache: cargo
+
+matrix:
+  include:
+
+    - name: linux|stable|pkg-config
+      os: linux
+      rust: stable
+      env: FEATURE_FLAGS="--no-default-features --features pkg-config"
+      addons:
+        apt:
+          packages:
+            - libgraphite2-dev
+
+    - name: linux|stable|static
+      os: linux
+      rust: stable
+      env: FEATURE_FLAGS="--no-default-features --features static"
+
+    - name: linux|stable|no-default
+      os: linux
+      rust: stable
+      env: FEATURE_FLAGS="--no-default-features"
+
+    - name: linux|nightly|static
+      os: linux
+      rust: nightly
+      env: FEATURE_FLAGS="--no-default-features --features static"
+
+    - name: osx|stable|pkg-config
+      os: osx
+      rust: stable
+      # Use newest image to get the latest formula.
+      osx_image: xcode10.2
+      env: FEATURE_FLAGS="--no-default-features --features pkg-config"
+      addons:
+        homebrew:
+          packages:
+            - graphite2
+
+    - name: osx|stable|static
+      os: osx
+      rust: stable
+      env: FEATURE_FLAGS="--no-default-features --features static"
+
+    - name: osx|stable|no-default
+      os: osx
+      rust: stable
+      env: FEATURE_FLAGS="--no-default-features"
+
+    - name: osx|nightly|static
+      os: osx
+      rust: nightly
+      env: FEATURE_FLAGS="--no-default-features --features static"
+
+before_script:
+  # Download all dependencies
+  - cargo fetch
+
+script:
+  # Build and test the package with the given feature flags
+  - cargo build -vv $FEATURE_FLAGS
+  - cargo package -vv $FEATURE_FLAGS
