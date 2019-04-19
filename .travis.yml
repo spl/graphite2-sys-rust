@@ -4,6 +4,17 @@ cache: cargo
 matrix:
   include:
 
+    ####### linux
+
+    - name: linux|stable|no-default
+      os: linux
+      rust: stable
+      env: FEATURE_FLAGS="--no-default-features"
+      addons:
+        apt:
+          packages:
+            - libgraphite2-dev
+
     - name: linux|stable|pkg-config
       os: linux
       rust: stable
@@ -18,15 +29,20 @@ matrix:
       rust: stable
       env: FEATURE_FLAGS="--no-default-features --features static"
 
-    - name: linux|stable|no-default
-      os: linux
-      rust: stable
-      env: FEATURE_FLAGS="--no-default-features"
-
-    - name: linux|nightly|static
+    - name: linux|nightly|default
       os: linux
       rust: nightly
-      env: FEATURE_FLAGS="--no-default-features --features static"
+
+    ####### osx
+
+    - name: osx|stable|no-default
+      os: osx
+      rust: stable
+      env: FEATURE_FLAGS="--no-default-features"
+      addons:
+        homebrew:
+          packages:
+            - graphite2
 
     - name: osx|stable|pkg-config
       os: osx
@@ -44,15 +60,9 @@ matrix:
       rust: stable
       env: FEATURE_FLAGS="--no-default-features --features static"
 
-    - name: osx|stable|no-default
-      os: osx
-      rust: stable
-      env: FEATURE_FLAGS="--no-default-features"
-
-    - name: osx|nightly|static
+    - name: osx|nightly|default
       os: osx
       rust: nightly
-      env: FEATURE_FLAGS="--no-default-features --features static"
 
 before_script:
   # Download all dependencies
