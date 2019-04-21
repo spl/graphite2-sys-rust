@@ -72,7 +72,7 @@ fn use_installed() {
     let mut cmd = std::process::Command::new(cc::Build::new().get_compiler().path());
 
     // Link to some installed `graphite2` shared library and build a simple executable.
-    cmd.arg("-lgraphite2").arg("graphite2/tests/examples/simple.c");
+    cmd.arg("-lgraphite2").arg("-o").arg("/dev/null").arg("graphite2/tests/examples/simple.c");
     println!("[build.rs] Command: {:?}", cmd);
 
     // Run the command and check the status.
