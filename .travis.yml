@@ -9,7 +9,7 @@ matrix:
     - name: linux|stable|no-default
       os: linux
       rust: stable
-      env: FEATURE_FLAGS="--no-default-features"
+      env: FEATURE_FLAGS="--no-default-features" CFLAGS="$(pkg-config --libs --cflags)"
       addons:
         apt:
           packages:
