@@ -73,9 +73,6 @@ fn use_installed() {
 
     // Link to some installed `graphite2` shared library and build a simple executable.
     cmd.arg("-o").arg("/dev/null").arg("graphite2/tests/examples/simple.c").arg("-lgraphite2");
-    if let Some(cflags) = std::env::var_os("CFLAGS") {
-        cmd.env("CFLAGS", cflags);
-    }
     println!("[build.rs] Command: {:?}", cmd);
 
     // Run the command and check the status.
