@@ -64,6 +64,12 @@ matrix:
       os: osx
       rust: nightly
 
+    ####### windows
+
+    - name: windows|stable|default
+      os: windows
+      rust: stable
+
 script:
   # Package a crate and verify it by building with the given feature flags
   - cargo package -vv $FEATURE_FLAGS
