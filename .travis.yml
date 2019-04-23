@@ -64,11 +64,6 @@ matrix:
       os: osx
       rust: nightly
 
-before_script:
-  # Download all dependencies
-  - cargo fetch
-
 script:
-  # Build and test the package with the given feature flags
-  - cargo build -vv $FEATURE_FLAGS
+  # Package a crate and verify it by building with the given feature flags
   - cargo package -vv $FEATURE_FLAGS
