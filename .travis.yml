@@ -1,5 +1,4 @@
 language: rust
-cache: cargo
 
 matrix:
   include:
@@ -10,6 +9,7 @@ matrix:
       os: linux
       rust: stable
       env: FEATURE_FLAGS="--no-default-features"
+      cache: cargo
       addons:
         apt:
           packages:
@@ -19,6 +19,7 @@ matrix:
       os: linux
       rust: stable
       env: FEATURE_FLAGS="--no-default-features --features pkg-config"
+      cache: cargo
       addons:
         apt:
           packages:
@@ -28,10 +29,12 @@ matrix:
       os: linux
       rust: stable
       env: FEATURE_FLAGS="--no-default-features --features static"
+      cache: cargo
 
     - name: linux|nightly|default
       os: linux
       rust: nightly
+      cache: cargo
 
     ####### osx
 
@@ -39,6 +42,7 @@ matrix:
       os: osx
       rust: stable
       env: FEATURE_FLAGS="--no-default-features"
+      cache: cargo
       addons:
         homebrew:
           packages:
@@ -50,6 +54,7 @@ matrix:
       # Use newest image to get the latest formula.
       osx_image: xcode10.2
       env: FEATURE_FLAGS="--no-default-features --features pkg-config"
+      cache: cargo
       addons:
         homebrew:
           packages:
@@ -59,16 +64,20 @@ matrix:
       os: osx
       rust: stable
       env: FEATURE_FLAGS="--no-default-features --features static"
+      cache: cargo
 
     - name: osx|nightly|default
       os: osx
       rust: nightly
+      cache: cargo
 
     ####### windows
 
     - name: windows|stable|default
       os: windows
       rust: stable
+      # Do not use `cache: cargo` for windows.
+      # See https://github.com/travis-ci/casher/pull/38#issuecomment-486544019
 
 script:
   # Package a crate and verify it by building with the given feature flags
