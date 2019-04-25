@@ -3,18 +3,22 @@ extern crate cc;
 extern crate cmake;
 #[cfg(feature = "pkg-config")]
 extern crate pkg_config;
+#[cfg(feature = "vcpkg")]
+extern crate vcpkg;
 
 fn main() {
 
     // 1. Use pkg-config to find a shared library. (feature = "pkg-config")
 
-    // 2. Build a static library. (feature = "static")
+    // 2. Use vcpkg to find a shared or static library. (feature = "vcpkg")
 
-    if use_pkg_config() || build_static_lib() {
+    // 3. Build a static library. (feature = "static")
+
+    if use_pkg_config() || use_vcpkg() || build_static_lib() {
         return
     }
 
-    // 3. Use an installed shared library with using pkg-config. (no-default-features)
+    // 4. Use an installed shared library with no package manager. (no-default-features)
     //
     // This is only done by disabling both of the features "pkg-config" and "static". This cannot
     // be disabled; otherwise, there's no library available.
@@ -25,18 +29,40 @@ fn main() {
 #[cfg(feature = "pkg-config")]
 fn use_pkg_config() -> bool {
     println!("[build.rs] Trying pkg-config...");
-    if let Ok(lib) = pkg_config::probe_library("graphite2") {
-        println!("[build.rs] pkg-config succeeded.");
-        println!("[build.rs] {:?}", lib);
-        true
-    } else {
-        println!("[build.rs] pkg-config failed.");
-        false
+    match pkg_config::probe_library("graphite2") {
+        Ok(lib) => {
+            println!("[build.rs] pkg-config succeeded: {:?}", lib);
+            true
+        }
+        Err(err) => {
+            println!("[build.rs] pkg-config failed: {}", err);
+            false
+        }
     }
 }
 
 #[cfg(not(feature = "pkg-config"))]
 fn use_pkg_config() -> bool {
+    false
+}
+
+#[cfg(feature = "vcpkg")]
+fn use_vcpkg() -> bool {
+    println!("[build.rs] Trying vcpkg...");
+    match vcpkg::find_package("graphite2") {
+        Ok(lib) => {
+            println!("[build.rs] vcpkg succeeded: {:?}", lib);
+            true
+        }
+        Err(err) => {
+            println!("[build.rs] vcpkg failed: {}", err);
+            false
+        }
+    }
+}
+
+#[cfg(not(feature = "vcpkg"))]
+fn use_vcpkg() -> bool {
     false
 }
 

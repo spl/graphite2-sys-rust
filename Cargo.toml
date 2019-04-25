@@ -9,7 +9,10 @@ links = "graphite2"
 cc = "1.0"
 cmake = { version = "0.1", optional = true }
 pkg-config = { version = "0.3", optional = true }
+vcpkg = { version = "0.2", optional = true }
+
+[target.'cfg(target_env = "msvc")'.build-dependencies]
 
 [features]
-default = ["static", "pkg-config"]
+default = ["pkg-config", "vcpkg", "static"]
 static = ["cmake"]

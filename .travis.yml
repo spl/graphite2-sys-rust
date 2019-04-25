@@ -73,11 +73,40 @@ matrix:
 
     ####### windows
 
+    # Do not use `cache: cargo` for windows.
+    # See https://github.com/travis-ci/casher/pull/38#issuecomment-486544019
+
+    - name: windows|stable|vcpkg|shared
+      os: windows
+      rust: stable-x86_64-pc-windows-msvc
+      env:
+        FEATURE_FLAGS="--no-default-features --features vcpkg"
+        VCPKG_DEFAULT_TRIPLET=x64-windows
+        VCPKGRS_DYNAMIC=1
+      install:
+        - export VCPKG_ROOT=$HOME/vcpkg
+        - git clone --depth 1 https://github.com/Microsoft/vcpkg.git $VCPKG_ROOT
+        - $VCPKG_ROOT/bootstrap-vcpkg.bat
+        - $VCPKG_ROOT/vcpkg install graphite2
+        - $VCPKG_ROOT/vcpkg list | grep graphite2
+
+    - name: windows|stable|vcpkg|static
+      os: windows
+      rust: stable-i686-pc-windows-msvc
+      env:
+        FEATURE_FLAGS="--no-default-features --features vcpkg"
+        VCPKG_DEFAULT_TRIPLET=x86-windows-static
+        RUSTFLAGS=-Ctarget-feature=+crt-static
+      install:
+        - export VCPKG_ROOT=$HOME/vcpkg
+        - git clone --depth 1 https://github.com/Microsoft/vcpkg.git $VCPKG_ROOT
+        - $VCPKG_ROOT/bootstrap-vcpkg.bat
+        - $VCPKG_ROOT/vcpkg install graphite2
+        - $VCPKG_ROOT/vcpkg list | grep graphite2
+
     - name: windows|stable|default
       os: windows
-      rust: stable
-      # Do not use `cache: cargo` for windows.
-      # See https://github.com/travis-ci/casher/pull/38#issuecomment-486544019
+      rust: nightly
 
 script:
   # Package a crate and verify it by building with the given feature flags
