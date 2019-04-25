@@ -82,10 +82,14 @@ if (BUILD_SHARED_LIBS)
 endif()
 
 add_subdirectory(src)
+# Disable tests and gr2fonttest for Windows static build.
+# See https://github.com/silnrsi/graphite/issues/55
+if (FALSE)
 add_subdirectory(tests)
 add_subdirectory(doc)
 if (NOT GRAPHITE2_NFILEFACE)
     add_subdirectory(gr2fonttest)
+endif()
 endif()
 
 set(version 3.0.1)
