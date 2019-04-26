@@ -83,12 +83,9 @@ matrix:
         FEATURE_FLAGS="--no-default-features --features vcpkg"
         VCPKG_DEFAULT_TRIPLET=x64-windows
         VCPKGRS_DYNAMIC=1
+        VCPKG_ROOT=$HOME/vcpkg
       install:
-        - export VCPKG_ROOT=$HOME/vcpkg
-        - git clone --depth 1 https://github.com/Microsoft/vcpkg.git $VCPKG_ROOT
-        - $VCPKG_ROOT/bootstrap-vcpkg.bat
-        - $VCPKG_ROOT/vcpkg install graphite2
-        - $VCPKG_ROOT/vcpkg list | grep graphite2
+        - bash ./ci/install-vcpkg.sh
 
     - name: windows|stable|vcpkg|static
       os: windows
@@ -97,12 +94,9 @@ matrix:
         FEATURE_FLAGS="--no-default-features --features vcpkg"
         VCPKG_DEFAULT_TRIPLET=x86-windows-static
         RUSTFLAGS=-Ctarget-feature=+crt-static
+        VCPKG_ROOT=$HOME/vcpkg
       install:
-        - export VCPKG_ROOT=$HOME/vcpkg
-        - git clone --depth 1 https://github.com/Microsoft/vcpkg.git $VCPKG_ROOT
-        - $VCPKG_ROOT/bootstrap-vcpkg.bat
-        - $VCPKG_ROOT/vcpkg install graphite2
-        - $VCPKG_ROOT/vcpkg list | grep graphite2
+        - bash ./ci/install-vcpkg.sh
 
     - name: windows|stable|default
       os: windows
