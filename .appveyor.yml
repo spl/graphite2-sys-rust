@@ -1,0 +1,66 @@
+# Use a simple incremented version number.
+version: '{build}'
+
+# Download the repository as a zip archive.
+# https://www.appveyor.com/docs/how-to/repository-shallow-clone/
+shallow_clone: true
+
+# Keep these directories across builds.
+cache:
+  # I'm not sure why only `\registry` should be cached. It seems like
+  # `rustup-init.exe` doesn't actually work with caching `\bin`.
+  - '%USERPROFILE%\.cargo\registry'
+  - target
+
+environment:
+  matrix:
+
+    ####### msvc
+
+    - CHANNEL: stable
+      ARCH: i686
+      TOOLCHAIN: msvc
+      FEATURES: vcpkg
+      VCPKG_DEFAULT_TRIPLET: x86-windows-static
+      RUSTFLAGS: -Ctarget-feature=+crt-static
+
+    - CHANNEL: stable
+      ARCH: x86_64
+      TOOLCHAIN: msvc
+      FEATURES: vcpkg
+      VCPKG_DEFAULT_TRIPLET: x64-windows
+      VCPKGRS_DYNAMIC: 1
+
+    - CHANNEL: nightly
+      ARCH: x86_64
+      TOOLCHAIN: msvc
+      FEATURES: static
+
+    ####### gnu
+
+    - CHANNEL: stable
+      ARCH: i686
+      TOOLCHAIN: gnu
+      FEATURES: static
+
+    - CHANNEL: stable
+      ARCH: x86_64
+      TOOLCHAIN: gnu
+      FEATURES: pkg-config
+
+    - CHANNEL: nightly
+      ARCH: i686
+      TOOLCHAIN: gnu
+
+install:
+  - ps: .appveyor\install-rust.ps1
+  - ps: .appveyor\setup-msvc.ps1
+  - ps: .appveyor\setup-gnu.ps1
+
+# We do everything in the test_script phase, so we disable the build phase to
+# avoid AppVeyor trying to build something and failing.
+build: false
+
+test_script:
+  - if defined FEATURES set FEATURE_FLAGS=--no-default-features --features %FEATURES%
+  - cargo package -vv %FEATURE_FLAGS%
