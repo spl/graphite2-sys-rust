@@ -63,4 +63,4 @@ build: false
 
 test_script:
   - if defined FEATURES set FEATURE_FLAGS=--no-default-features --features %FEATURES%
-  - cargo package -vv %FEATURE_FLAGS%
+  - cargo package -vv --manifest-path graphite2-sys/Cargo.toml %FEATURE_FLAGS%

@@ -73,4 +73,4 @@ matrix:
 
 script:
   # Package a crate and verify it by building with the given feature flags
-  - cargo package -vv $FEATURE_FLAGS
+  - cargo package -vv --manifest-path graphite2-sys/Cargo.toml $FEATURE_FLAGS
