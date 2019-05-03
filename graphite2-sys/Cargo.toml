@@ -1,5 +1,5 @@
 [package]
-name = "graphite2-nobindings"
+name = "graphite2-sys"
 version = "1.3.13"
 authors = ["Sean Leather <sean.leather@gmail.com>"]
 edition = "2018"
