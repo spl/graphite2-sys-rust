@@ -85,7 +85,7 @@ matrix:
         VCPKGRS_DYNAMIC=1
         VCPKG_ROOT=$HOME/vcpkg
       install:
-        - bash ./ci/install-vcpkg.sh
+        - bash ./.travis/install-vcpkg.sh
 
     - name: windows|stable|vcpkg|static
       os: windows
@@ -96,7 +96,7 @@ matrix:
         RUSTFLAGS=-Ctarget-feature=+crt-static
         VCPKG_ROOT=$HOME/vcpkg
       install:
-        - bash ./ci/install-vcpkg.sh
+        - bash ./.travis/install-vcpkg.sh
 
     - name: windows|stable|default
       os: windows
