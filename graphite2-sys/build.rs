@@ -70,12 +70,26 @@ fn use_vcpkg() -> bool {
 fn build_static_lib() -> bool {
     println!("[build.rs] Compiling a static library...");
 
+    // Create a `cmake` configuration for building in the `graphite2` directory.
+    let mut cfg = cmake::Config::new("graphite2");
+
+    // Set the `cmake` build profile based on the Rust profile.
+    // https://doc.rust-lang.org/cargo/reference/manifest.html#the-profile-sections
+    #[cfg(debug_assertions)]
+    cfg.profile("Debug");
+    #[cfg(not(debug_assertions))]
+    cfg.profile("Release");
+
+    // Disable shared libraries to build a static library
+    cfg.define("BUILD_SHARED_LIBS", "OFF");
+
+    // Avoid problem with -G "MinGW Makefiles" when `sh.exe` is in the $PATH.
+    // https://stackoverflow.com/a/45104058/545794
+    #[cfg(all(windows, target_env = "gnu"))]
+    cfg.define("CMAKE_SH", "CMAKE_SH-NOTFOUND");
+
     // Build `graphite2` and install it in $OUT_DIR.
-    let install_dir = cmake::Config::new("graphite2")
-        .profile("Release")
-        // Disable shared libraries to build a static library
-        .define("BUILD_SHARED_LIBS", "OFF")
-        .build();
+    let install_dir = cfg.build();
 
     println!("cargo:rustc-link-search=native={}", install_dir.join("lib").display());
     println!("cargo:rustc-link-lib=static=graphite2");
