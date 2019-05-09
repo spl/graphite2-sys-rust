@@ -13,25 +13,6 @@ if ($env:TOOLCHAIN -ne 'gnu') { exit }
 # Check for expected environment variables.
 if (!(test-path env:ARCH)) { throw 'Missing env var: ARCH' }
 
-# `sh.exe` must not be in the path for CMake with "MinGW Makefiles" to work.
-# This script finds its path and removes its directory from PATH.
-#
-# Sources:
-# - https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/platform_dependent_issues/MinGW-Compiler-Issues
-# - https://help.appveyor.com/discussions/problems/3193
-
-# Get the path of `sh.exe`.
-$sh_path = (get-command sh.exe).path
-
-# If the path exists, remove the directory containing `sh.exe` from PATH by
-# splitting the entries, filtering, and joining the remaining entries.
-if ($sh_path) {
-  $sh_path = split-path $sh_path
-  write-host "Removing from PATH: $sh_path"
-  # Source: https://stackoverflow.com/a/54856614/545794
-  $env:PATH = ($env:PATH.split(';') | where-object {$_ -ne $sh_path}) -join ';'
-}
-
 # Get the number of bits from the ARCH.
 if ($env:ARCH -eq 'i686') {
   $bits = '32'
