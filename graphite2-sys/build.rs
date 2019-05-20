@@ -91,7 +91,10 @@ fn build_static_lib() -> bool {
     // Build `graphite2` and install it in $OUT_DIR.
     let install_dir = cfg.build();
 
+    // Use the installation directory to find the library for linking.
     println!("cargo:rustc-link-search=native={}", install_dir.join("lib").display());
+
+    // Link statically.
     println!("cargo:rustc-link-lib=static=graphite2");
 
     // For MinGW:
@@ -100,6 +103,7 @@ fn build_static_lib() -> bool {
     #[cfg(all(windows, target_env = "gnu"))]
     println!("cargo:rustc-link-lib=stdc++");
 
+    // Pass along the header file directory.
     println!("cargo:include={}", install_dir.join("include").display());
 
     println!("[build.rs] Compiling done.");
