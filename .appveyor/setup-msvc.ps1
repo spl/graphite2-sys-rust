@@ -4,6 +4,10 @@
 # In particular, it installs `graphite2` with `vcpkg`. Note that it does not do
 # anything without the `vcpkg` feature.
 
+# Print each command before execution and throw an exception if a variable is
+# referenced before being defined.
+set-psdebug -trace 1 -strict
+
 # Exit on any error.
 $ErrorActionPreference = 'Stop';
 

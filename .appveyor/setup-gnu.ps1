@@ -4,14 +4,15 @@
 # In particular, it fixes the PATH for CMake with MinGW and installs
 # `graphite2` with `pkg-config`.
 
+# Print each command before execution and throw an exception if a variable is
+# referenced before being defined.
+set-psdebug -trace 1 -strict
+
 # Exit on any error.
 $ErrorActionPreference = 'Stop';
 
 # Don't do anything for unexpected environment variables.
 if ($env:TOOLCHAIN -ne 'gnu') { exit }
-
-# Check for expected environment variables.
-if (!(test-path env:ARCH)) { throw 'Missing env var: ARCH' }
 
 # Get the number of bits from the ARCH.
 if ($env:ARCH -eq 'i686') {
@@ -25,8 +26,15 @@ if ($env:ARCH -eq 'i686') {
 # Add the MingW tools (e.g. GCC) to PATH for use by CMake.
 $env:PATH = 'C:\msys64\mingw' + $bits + '\bin;' + $env:PATH
 
+# Print path and version.
+C:\msys64\usr\bin\which gcc
+gcc --version
+
 # Don't do anything for unexpected environment variables.
 if ($env:FEATURES -ne 'pkg-config') { exit }
+
+# Print path.
+C:\msys64\usr\bin\which pkg-config
 
 # Print version.
 C:\msys64\usr\bin\pacman --version
@@ -39,5 +47,6 @@ C:\msys64\usr\bin\pacman --version
 C:\msys64\usr\bin\mkdir -p /var/cache/pacman/pkg
 
 # Install `graphite2` and show that it is installed.
-appveyor-retry C:\msys64\usr\bin\pacman --sync --sysupgrade --noconfirm "mingw-w64-$env:ARCH-graphite2"
+appveyor-retry C:\msys64\usr\bin\pacman --sync --sysupgrade --needed --noconfirm "mingw-w64-$env:ARCH-graphite2"
 C:\msys64\usr\bin\pacman --query --info "mingw-w64-$env:ARCH-graphite2"
+pkg-config --libs --cflags graphite2

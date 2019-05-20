@@ -1,9 +1,8 @@
 # This script installs the Rust components.
 
-# Check for expected environment variables.
-if (!(test-path env:CHANNEL))   { throw 'Missing env var: CHANNEL'   }
-if (!(test-path env:ARCH))      { throw 'Missing env var: ARCH'      }
-if (!(test-path env:TOOLCHAIN)) { throw 'Missing env var: TOOLCHAIN' }
+# Print each command before execution and throw an exception if a variable is
+# referenced before being defined.
+set-psdebug -trace 1 -strict
 
 $rust = "$env:CHANNEL-$env:ARCH-pc-windows-$env:TOOLCHAIN"
 
