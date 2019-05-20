@@ -72,5 +72,9 @@ matrix:
       cache: cargo
 
 script:
-  # Package a crate and verify it by building with the given feature flags
+  # Package and build the crate with feature flags.
   - cargo package -vv --manifest-path graphite2-sys/Cargo.toml $FEATURE_FLAGS
+  # Run the bindgen-generated tests.
+  - cargo test -vv --manifest-path graphite2-sys/Cargo.toml $FEATURE_FLAGS
+  # Test by compiling with a C compiler.
+  - cargo run -vv --manifest-path graphite2-sys-ctest/Cargo.toml

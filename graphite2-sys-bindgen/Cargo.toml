@@ -1,0 +1,8 @@
+[package]
+name = "graphite2-sys-bindgen"
+version = "0.1.0"
+authors = ["Sean Leather <sean.leather@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+bindgen = "0.49.0"

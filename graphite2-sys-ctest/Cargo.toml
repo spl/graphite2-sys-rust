@@ -1,0 +1,14 @@
+[package]
+name = "graphite2-sys-ctest"
+version = "0.1.0"
+authors = ["Sean Leather <sean.leather@gmail.com>"]
+edition = "2018"
+build = "build.rs"
+
+[dependencies]
+graphite2-sys = { path = "../graphite2-sys" }
+
+[build-dependencies]
+pkg-config = "0.3"
+ctest = "0.2"
+vcpkg = "0.2"

@@ -93,6 +93,13 @@ fn build_static_lib() -> bool {
 
     println!("cargo:rustc-link-search=native={}", install_dir.join("lib").display());
     println!("cargo:rustc-link-lib=static=graphite2");
+
+    // For MinGW:
+    //   1. We must tell `rustc` to link with `libstdc++`.
+    //   2. This must come after `static=graphite2`.
+    #[cfg(all(windows, target_env = "gnu"))]
+    println!("cargo:rustc-link-lib=stdc++");
+
     println!("cargo:include={}", install_dir.join("include").display());
 
     println!("[build.rs] Compiling done.");

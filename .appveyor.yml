@@ -47,6 +47,10 @@ environment:
       ARCH: x86_64
       TOOLCHAIN: gnu
       FEATURES: pkg-config
+      # This is a workaround for the issue where the rust-mingw toolchain `gcc`
+      # does not find the installed `graphite2` shared library:
+      # - https://github.com/rust-lang/rust/issues/60781
+      CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER: C:/msys64/mingw64/bin/gcc
 
     - CHANNEL: nightly
       ARCH: i686
@@ -63,4 +67,9 @@ build: false
 
 test_script:
   - if defined FEATURES set FEATURE_FLAGS=--no-default-features --features %FEATURES%
+  # Package and build the crate with feature flags.
   - cargo package -vv --manifest-path graphite2-sys/Cargo.toml %FEATURE_FLAGS%
+  # Run the bindgen-generated tests with feature flags.
+  - cargo test -vv --manifest-path graphite2-sys/Cargo.toml %FEATURE_FLAGS%
+  # Test by compiling with a C compiler.
+  - cargo run -vv --manifest-path graphite2-sys-ctest/Cargo.toml
