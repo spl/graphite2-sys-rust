@@ -102,9 +102,13 @@ set_target_properties(graphite2 PROPERTIES  PUBLIC_HEADER "${GRAPHITE_HEADERS}"
                                             LT_VERSION_REVISION ${GRAPHITE_API_REVISION}
                                             LT_VERSION_AGE ${GRAPHITE_API_AGE})
 
+message(STATUS "System: ${CMAKE_SYSTEM_NAME}")
+message(STATUS "Processor: ${CMAKE_SYSTEM_PROCESSOR}")
+message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID}")
+
 if  (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     set_target_properties(graphite2 PROPERTIES
-        COMPILE_FLAGS   "-Wall -Wextra -Wno-unknown-pragmas -Wendif-labels -Wshadow -Wctor-dtor-privacy -Wnon-virtual-dtor -fno-rtti -fno-exceptions -fvisibility=hidden -fvisibility-inlines-hidden"
+        COMPILE_FLAGS   "-Wall -Wextra -Wno-unknown-pragmas -Wendif-labels -Wshadow -Wctor-dtor-privacy -Wnon-virtual-dtor -fno-rtti -fno-exceptions -fvisibility=hidden -fvisibility-inlines-hidden -std=c++11"
         LINK_FLAGS      "-nodefaultlibs ${GRAPHITE_LINK_FLAGS}"
         LINKER_LANGUAGE C)
     if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86|i.86")
@@ -113,7 +117,6 @@ if  (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     if (CMAKE_COMPILER_IS_GNUCXX)
         add_definitions(-Wdouble-promotion)
     endif()
-    message(STATUS "Compiler ID is: ${CMAKE_CXX_COMPILER_ID}")
     if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
         add_definitions(-Wimplicit-fallthrough -Wshorten-64-to-32)
     endif()

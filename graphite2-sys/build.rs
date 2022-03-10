@@ -6,6 +6,8 @@ extern crate pkg_config;
 #[cfg(feature = "vcpkg")]
 extern crate vcpkg;
 
+use std::env;
+
 fn main() {
 
     // 1. Use pkg-config to find a shared library. (feature = "pkg-config")
@@ -68,7 +70,18 @@ fn use_vcpkg() -> bool {
 
 #[cfg(feature = "static")]
 fn build_static_lib() -> bool {
-    println!("[build.rs] Compiling a static library...");
+
+    let target = env::var("TARGET").unwrap();
+    println!("[build.rs] Compiling a static library for the target '{}'...", target);
+
+    std::process::Command::new("cmake")
+        .arg("--version")
+        .status()
+        .expect("failed to execute process");
+    std::process::Command::new("cmake")
+        .arg("--system-information")
+        .status()
+        .expect("failed to execute process");
 
     // Create a `cmake` configuration for building in the `graphite2` directory.
     let mut cfg = cmake::Config::new("graphite2");
@@ -82,6 +95,16 @@ fn build_static_lib() -> bool {
 
     // Disable shared libraries to build a static library
     cfg.define("BUILD_SHARED_LIBS", "OFF");
+
+    let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap();
+    println!("CARGO_CFG_TARGET_OS: {}", target_os);
+    let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap();
+    println!("CARGO_CFG_TARGET_ARCH: {}", target_arch);
+
+    if target_os == "linux" && target_arch == "powerpc" {
+        cfg.define("CMAKE_SYSTEM_NAME", "Linux");
+        cfg.define("CMAKE_SYSTEM_PROCESSOR", "powerpc");
+    }
 
     // Avoid problem with -G "MinGW Makefiles" when `sh.exe` is in the $PATH.
     // https://stackoverflow.com/a/45104058/545794
